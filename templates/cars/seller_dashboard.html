@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Tableau de bord Vendeur</h2>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h4>Mes Annonces</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Voiture</th>
+                    <th>Statut</th>
+                    <th>Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in my_cars %}
+                <tr>
+                    <td>{{ car.brand }} {{ car.model }}</td>
+                    <td>
+                        {% if car.is_validated %}
+                            <span class="badge bg-success">Validée</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">En attente</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ car.price }} FCFA</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="col-md-6">
+        <h4>Commandes Reçues</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Voiture</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in received_orders %}
+                <tr>
+                    <td>{{ order.buyer.username }}</td>
+                    <td>{{ order.car.brand }} {{ order.car.model }}</td>
+                    <td>{{ order.created_at|date:"d/m" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

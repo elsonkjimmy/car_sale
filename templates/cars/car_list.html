@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-white py-5">
+    <div class="container position-relative z-1">
+        <h1 class="display-4 fw-bold mb-4">Trouvez la voiture de vos rêves au Cameroun</h1>
+        <p class="lead mb-5 fs-4">Des milliers d'offres de véhicules d'occasion et neufs, vérifiés par nos experts.</p>
+    </div>
+</section>
+
+<!-- Search Bar & Filters -->
+<div class="container position-relative" style="margin-top: -40px; z-index: 10;">
+    <div class="card shadow-lg border-0 rounded-4 p-4 bg-white">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-muted small text-uppercase">Marque / Modèle</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" name="brand" class="form-control bg-light border-start-0 ps-0" placeholder="Ex: Toyota Corrolla..." value="{{ request.GET.brand }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold text-muted small text-uppercase">Carburant</label>
+                <select name="fuel_type" class="form-select bg-light">
+                    <option value="">Tous types</option>
+                    <option value="gasoline" {% if request.GET.fuel_type == 'gasoline' %}selected{% endif %}>Essence</option>
+                    <option value="diesel" {% if request.GET.fuel_type == 'diesel' %}selected{% endif %}>Diesel</option>
+                    <option value="electric" {% if request.GET.fuel_type == 'electric' %}selected{% endif %}>Électrique</option>
+                    <option value="hybrid" {% if request.GET.fuel_type == 'hybrid' %}selected{% endif %}>Hybride</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold text-muted small text-uppercase">Prix Min (FCFA)</label>
+                <input type="number" name="min_price" class="form-control bg-light" placeholder="Min" value="{{ request.GET.min_price }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold text-muted small text-uppercase">Prix Max (FCFA)</label>
+                <input type="number" name="max_price" class="form-control bg-light" placeholder="Max" value="{{ request.GET.max_price }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-uppercase rounded-pill shadow-sm">
+                    <i class="fas fa-filter me-2"></i> Filtrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Car Listings -->
+<div class="container py-5 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold text-dark border-start border-5 border-primary ps-3">Dernières Annonces</h2>
+        <span class="text-muted">{{ cars.count }} véhicules trouvés</span>
+    </div>
+
+    <div class="row g-4">
+        {% for car in cars %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                    <!-- Image -->
+                    <div class="position-relative overflow-hidden rounded-top-4">
+                        {% if car.images.first %}
+                            <img src="{{ car.images.first.image.url }}" class="card-img-top object-fit-cover" alt="{{ car.brand }}" style="height: 220px; transition: transform 0.3s;">
+                        {% else %}
+                            <div class="bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 220px;">
+                                <i class="fas fa-car fa-3x"></i>
+                            </div>
+                        {% endif %}
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-white text-dark shadow-sm rounded-pill px-3 py-2 fw-bold">
+                                {{ car.year }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title fw-bold mb-0 text-dark">{{ car.brand }} {{ car.model }}</h5>
+                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 me-1">
+                                <i class="fas fa-tachometer-alt me-1"></i> {{ car.mileage }} km
+                            </span>
+                            <span class="badge bg-light text-secondary border rounded-pill px-2 py-1">
+                                <i class="fas fa-gas-pump me-1"></i> {{ car.get_fuel_type_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                            <h4 class="text-primary fw-bold mb-0 fs-5">{{ car.price }} <small class="fs-6 text-muted">FCFA</small></h4>
+                            <a href="{% url 'cars:car_detail' car.pk %}" class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold">
+                                Détails <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="bg-light rounded-4 p-5">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h3 class="text-muted">Aucun véhicule trouvé</h3>
+                    <p class="text-secondary">Essayez de modifier vos critères de recherche.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+.hover-shadow img {
+    transform: scale(1.05);
+}
+</style>
+{% endblock %}

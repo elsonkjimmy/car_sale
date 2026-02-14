@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Gallery (Left) -->
+        <div class="col-lg-8">
+            <div class="bg-white rounded-4 overflow-hidden shadow-sm border mb-4">
+                <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for car_img in car.images.all %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ car_img.image.url }}" class="d-block w-100 object-fit-cover" alt="{{ car.brand }}" style="height: 500px;">
+                            </div>
+                        {% empty %}
+                            <div class="carousel-item active">
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 500px;">
+                                    <i class="fas fa-image fa-4x"></i> Pas d'image disponible
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Description & Specs -->
+            <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
+                <h3 class="fw-bold mb-4 text-dark border-bottom pb-3">Caractéristiques</h3>
+                <div class="row g-4 mb-5 text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3 h-100">
+                            <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
+                            <div class="text-muted small text-uppercase">Année</div>
+                            <div class="fw-bold fs-5">{{ car.year }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3 h-100">
+                            <i class="fas fa-tachometer-alt fa-2x text-primary mb-2"></i>
+                            <div class="text-muted small text-uppercase">Kilométrage</div>
+                            <div class="fw-bold fs-5">{{ car.mileage }} km</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3 h-100">
+                            <i class="fas fa-gas-pump fa-2x text-primary mb-2"></i>
+                            <div class="text-muted small text-uppercase">Carburant</div>
+                            <div class="fw-bold fs-5">{{ car.get_fuel_type_display }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded-3 h-100">
+                            <i class="fas fa-cogs fa-2x text-primary mb-2"></i>
+                            <div class="text-muted small text-uppercase">Boîte</div>
+                            <div class="fw-bold fs-5">Manuelle</div> <!-- Placeholder -->
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="fw-bold mb-3 text-dark">Description du vendeur</h3>
+                <p class="text-secondary lead lh-lg mb-0">{{ car.description|linebreaks }}</p>
+            </div>
+        </div>
+
+        <!-- Sidebar (Right) -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 sticky-top" style="top: 100px; z-index: 10;">
+                <div class="card-body p-4">
+                    <h1 class="fw-bold mb-1 text-dark">{{ car.brand }} {{ car.model }}</h1>
+                    <div class="mb-4">
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill">
+                            <i class="fas fa-check-circle me-1"></i> Disponible
+                        </span>
+                        <span class="text-muted ms-2 small">Réf: #{{ car.id }}</span>
+                    </div>
+
+                    <div class="bg-light p-4 rounded-3 mb-4 text-center">
+                        <div class="text-muted small text-uppercase fw-bold mb-1">Prix de vente</div>
+                        <div class="display-6 fw-bold text-primary">{{ car.price }} <span class="fs-4">FCFA</span></div>
+                    </div>
+
+                    <div class="d-grid gap-3 mb-4">
+                        <a href="{% url 'cars:place_order' car.pk %}" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm py-3 transition-hover">
+                            <i class="fas fa-shopping-cart me-2"></i> Acheter / Réserver
+                        </a>
+                        <a href="{% url 'cars:send_message' car.pk %}" class="btn btn-outline-dark btn-lg rounded-pill fw-bold py-3 transition-hover">
+                            <i class="fas fa-comments me-2"></i> Contacter le vendeur
+                        </a>
+                    </div>
+
+                    <div class="d-flex align-items-center border-top pt-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold fs-4 me-3" style="width: 50px; height: 50px;">
+                            {{ car.seller.username|first|upper }}
+                        </div>
+                        <div>
+                            <div class="text-muted small text-uppercase">Vendu par</div>
+                            <div class="fw-bold text-dark">{{ car.seller.username }}</div>
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                                <span class="text-muted ms-1">(4.8/5)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

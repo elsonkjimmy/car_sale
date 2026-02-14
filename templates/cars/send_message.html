@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Contacter le vendeur</h2>
+                <p>Pour la voiture : <strong>{{ car.brand }} {{ car.model }}</strong></p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+                    </div>
+                </form>
+                <a href="{% url 'cars:car_detail' car.pk %}" class="btn btn-link mt-2">Retour au détail</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

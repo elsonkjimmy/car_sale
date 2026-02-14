@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white py-4 text-center">
+                    <h2 class="fw-bold mb-0">Vendre un véhicule</h2>
+                    <p class="mb-0 text-white-50">Remplissez les détails pour publier votre annonce</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">Informations Générales</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Marque</label>
+                                <input type="text" name="brand" class="form-control form-control-lg bg-light border-0" placeholder="Ex: Toyota" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Modèle</label>
+                                <input type="text" name="model" class="form-control form-control-lg bg-light border-0" placeholder="Ex: Camry" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Année</label>
+                                <input type="number" name="year" class="form-control form-control-lg bg-light border-0" placeholder="2020" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Prix (FCFA)</label>
+                                <input type="number" step="0.01" name="price" class="form-control form-control-lg bg-light border-0" placeholder="5 000 000" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Kilométrage</label>
+                                <input type="number" name="mileage" class="form-control form-control-lg bg-light border-0" placeholder="50000" required>
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">Détails Techniques</h5>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Type de carburant</label>
+                            <select name="fuel_type" class="form-select form-select-lg bg-light border-0">
+                                <option value="gasoline">Essence</option>
+                                <option value="diesel">Diesel</option>
+                                <option value="electric">Électrique</option>
+                                <option value="hybrid">Hybride</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Description complète</label>
+                            <textarea name="description" class="form-control bg-light border-0" rows="5" placeholder="Décrivez l'état du véhicule, les options..."></textarea>
+                        </div>
+
+                        <h5 class="fw-bold mb-4 text-primary border-bottom pb-2">Photos du véhicule</h5>
+                        <div class="mb-4">
+                            <div class="upload-zone p-5 border-2 border-dashed rounded-4 text-center bg-light position-relative" style="border-style: dashed !important; border-color: #cbd5e1 !important;">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p class="mb-0">Cliquez pour ajouter des photos ou glissez-les ici</p>
+                                <input type="file" name="images" id="imageInput" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" multiple accept="image/*" style="cursor: pointer;">
+                            </div>
+                            <!-- Image Preview Container -->
+                            <div id="imagePreview" class="row g-2 mt-3"></div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold">
+                                <i class="fas fa-paper-plane me-2"></i> Publier l'annonce
+                            </button>
+                            <a href="{% url 'cars:car_list' %}" class="btn btn-link text-muted">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('imageInput').addEventListener('change', function(event) {
+    const previewContainer = document.getElementById('imagePreview');
+    previewContainer.innerHTML = ''; // Clear previous previews
+    
+    const files = event.target.files;
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const col = document.createElement('div');
+                col.className = 'col-3 position-relative';
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'img-thumbnail rounded-3 w-100';
+                img.style.height = '100px';
+                img.style.objectFit = 'cover';
+                
+                col.appendChild(img);
+                previewContainer.appendChild(col);
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    }
+});
+</script>
+{% endblock %}

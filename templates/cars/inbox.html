@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Ma Messagerie</h2>
+<div class="list-group mt-4">
+    {% for msg in messages %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">
+                    {% if msg.sender == user %}
+                        À: {{ msg.receiver.username }}
+                    {% else %}
+                        De: {{ msg.sender.username }}
+                    {% endif %}
+                </h5>
+                <small>{{ msg.timestamp|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p class="mb-1">{{ msg.content }}</p>
+            <small class="text-muted">Concerne: {{ msg.car.brand }} {{ msg.car.model }}</small>
+        </div>
+    {% empty %}
+        <p>Aucun message pour le moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}
