@@ -43,24 +43,47 @@ git clone <url-du-repo>
 cd ICT205/TP
 python -m venv venv
 source venv/bin/activate  # Sur Linux/Mac
-```
-
-### 2. Installer les dépendances
-```bash
 pip install -r requirements.txt
-# Ou manuellement :
-pip install django mysqlclient Pillow pymysql
 ```
 
-### 3. Configurer la base de données
-1. Créez une base de données MySQL nommée `car_sales_db`.
-2. Créez un utilisateur `car_user` avec le mot de passe `CarPass123!`.
-3. Donnez-lui les droits sur la base : `GRANT ALL PRIVILEGES ON car_sales_db.* TO 'car_user'@'127.0.0.1';`.
+### 2. Configuration de la Base de Données (MySQL)
 
-### 4. Lancer les migrations & le serveur
+L'application est configurée pour utiliser un utilisateur dédié par sécurité. Suivez ces étapes :
+
+1.  **Connectez-vous à MySQL** en tant que root :
+    ```bash
+    mysql -u root -p
+    ```
+2.  **Exécutez les commandes suivantes** pour créer la base et l'utilisateur :
+    ```sql
+    CREATE DATABASE car_sales_db CHARACTER SET utf8mb4;
+    CREATE USER 'car_user'@'127.0.0.1' IDENTIFIED BY 'CarPass123!';
+    GRANT ALL PRIVILEGES ON car_sales_db.* TO 'car_user'@'127.0.0.1';
+    FLUSH PRIVILEGES;
+    EXIT;
+    ```
+
+### 3. Initialisation et Peuplage (Données Camerounaises)
+
+Une fois la base de données prête, appliquez les migrations et remplissez-la avec des données de test :
+
+1.  **Appliquer les migrations** :
+    ```bash
+    python manage.py migrate
+    ```
+2.  **Peupler la base de données** (Ajout de vendeurs, acheteurs et voitures locales) :
+    ```bash
+    python seed_data.py
+    ```
+    *Note : Tous les utilisateurs créés par ce script (ekotto, abena, etc.) ont pour mot de passe : `pass1234`.*
+
+3.  **Créer un compte Administrateur** (pour valider les annonces) :
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+### 4. Lancer le serveur
 ```bash
-python manage.py migrate
-python manage.py createsuperuser  # Pour accéder au panel admin
 python manage.py runserver
 ```
 
